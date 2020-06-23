@@ -1,0 +1,90 @@
+---
+title: "NOSE analysis"
+author: "Scott Coggeshall"
+date: "6/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+There are two *unobserved* 2x2 tables containing the true classifications of the standard of care (SoC) swab and the Alterntive (Alt) swab.
+
+
+\begin{tabular}{cccc}
+& & Diseased & \\
+ & & 0 & 1 \\
+& 0 & $p_{00}$ & $p_{01}$ \\
+SoC \\
+& 1 & $p_{10}$ & $p_{11}$ 
+\end{tabular}
+
+
+\begin{tabular}{cccc}
+& & Diseased & \\
+ & & 0 & 1 \\
+& 0 & $q_{00}$ & $q_{01}$ \\
+Alt \\
+& 1 & $q_{10}$ & $q_{11}$ 
+\end{tabular}
+
+
+The *observed* data consists of the 2x2 cross-classification of the SoC swab and the Alt swab
+
+
+\begin{tabular}{cccc}
+& & SoC & \\
+ & & 0 & 1 \\
+& 0 & $r_{00}$ & $r_{01}$ \\
+Alt \\
+& 1 & $r_{10}$ & $r_{11}$ 
+\end{tabular}
+
+
+We now express these observed quantities in terms of the underlying disease prevalence and the swabs' diagnostic characteristics. Doing so will allow us to better understand how our assumptions about things like varying disease prevalence affect the observed data.
+
+\begin{align*}
+r_{00} &= P(Alt = 0, SoC = 0) \\
+&= P(Alt = 0, SoC = 0 \mid Disease = 1)P(Disease = 1) + P(Alt = 0, SoC= 0 \mid Disease = 0)P(Disease = 0) \\
+&= P(Alt = 0 \mid SoC= 0, Disease = 1)P(SoC = 0 \mid Disease = 1) + P(Alt = 0 \mid SoC = 0, Disease = 0)P(SoC = 0 \mid Disease = 0)P(Disease = 0)\\
+r_{11} &= P(Alt = 1, SoC = 1) \\
+&= P(Alt = 1, SoC = 1 \mid Disease = 1)P(Disease = 1) + P(Alt = 1, SoC = 1 \mid Disease = 0)P(Disease = 0) \\
+&= P(Alt = 1 \mid SoC = 1, Disease = 1)P(SoC = 1 \mid Disease = 1)P(Disease = 1) + P(Alt = 1 \mid SoC = 1, Disease = 0)P(SoC = 1 \mid Disease = 0)P(Disease = 0)\\
+r_{01} &= P(Alt = 0, SoC = 1) \\
+&= P(Alt = 0, SoC = 1 \mid Disease = 1)P(Disease = 1) + P(Alt = 0, SoC = 1 \mid Disease = 0)P(Disease = 0) \\
+\end{align*}
+
+The first table can be parameterized in terms of the quantities
+
+\begin{align*}
+\pi_d &= P(Diseased) \\
+p_1 &= P(SoC = 1) \\
+FP &= P(SoC = 1 \mid Diseased = 0)
+\end{align*}
+
+since this fully defines the probabilities  
+\begin{align*}
+p_{00} &= P(SoC = 0, Diseased = 0) \\
+&= P(SoC = 0 \mid Diseased = 0)P(Diseased = 0) \\
+&= (1 - P(SoC = 1 \mid Diseased = 0)(1 - P(Diseased = 1))) \\
+&= (1 - FP)(1 - \pi_d) \\
+p_{10} &= FP \\
+p_{11} &= P(SoC = 1, Diseased = 1) \\
+&= P(SoC = 1 \mid Diseased = 1) P(Diseased = 1) \\
+&= p_1- FP(1 - \pi_d))
+\end{align*}
+
+\section{Negative Predictive Value}
+
+The Negative Predictive Value (NPV) is defined as the probability that the SoC swab would return a negative diangosis given that the Alt swab returned a negative diagnosis. This quantity differs from "specificity" in that it conditions on the result of the Alt swab rather than the result of the reference swab. We take the NPV of the Alt swab as our quantity of interest because it is most relevant from a clinical standpoint.
+
+The NPV is given by
+
+\begin{align*}
+
+P(SoC = 0 \mid Alt = 0) &= \frac{P(Alt = 0, SoC = 0)}{P(SoC = 0)} \\
+&= \frac{P(Alt = 0, SoC = 0 \mid Diseased = 1)P(Diseased = 1) + P(Alt = 0, SoC = 0 \mid Diseased = 0)(1 - P(Diseased = 1))}{P(SoC = 0 \mid Diseased = 1)P(Diseased = 1) + P(SoC \mid Diseased = 0)(1 - P(Diseased = 0))}
+
+\end{align*}
+
